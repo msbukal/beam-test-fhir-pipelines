@@ -1,0 +1,69 @@
+plugins {
+    id 'java'
+    id 'application'
+    // Helps with resolving dependency conflicts: run ./gradlew htmlDependencyReport
+    id 'project-report'
+    // To generate license report, run: ./gradlew generateLicenseReport
+    id 'com.github.jk1.dependency-license-report' version '1.13'
+    // Package the pipeline along with its deps into a fat JAR.
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+}
+
+group 'com.google.cloud.healthcare'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    google()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs('src/main/java')
+        }
+    }
+}
+
+def dataflowVersion = '2.29.0'
+
+//configurations.all {
+//    resolutionStrategy {
+//        force 'com.google.apis:google-api-services-healthcare:v1-rev20210603-1.31.0'
+//    }
+//}
+
+dependencies {
+    implementation "org.apache.beam:beam-sdks-java-core:${dataflowVersion}"
+    implementation "org.apache.beam:beam-runners-google-cloud-dataflow-java:${dataflowVersion}"
+    implementation "org.apache.beam:beam-runners-direct-java:${dataflowVersion}"
+    implementation "org.apache.beam:beam-sdks-java-extensions-sorter:${dataflowVersion}"
+    implementation "org.apache.beam:beam-sdks-java-extensions-google-cloud-platform-core:${dataflowVersion}"
+    implementation "org.apache.beam:beam-sdks-java-io-google-cloud-platform:${dataflowVersion}"
+    implementation "org.apache.beam:beam-sdks-java-extensions-json-jackson:${dataflowVersion}"
+    implementation 'org.apache.commons:commons-csv:1.8'
+    implementation 'org.apache.commons:commons-lang3:3.5'
+    implementation 'org.checkerframework:checker-qual:3.8.0'
+    implementation 'org.slf4j:slf4j-api:1.7.25'
+    implementation 'com.github.ben-manes.caffeine:caffeine:2.9.0'
+    implementation 'com.google.api:gax-grpc:2.0.0'
+    implementation 'com.google.api-client:google-api-client-gson:1.28.0'
+    implementation 'com.google.cloud:google-cloud-storage:1.69.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.cloud:google-cloud-logging:2.1.0'
+    implementation 'com.google.fhir:r4:0.6.1'
+    implementation 'com.google.guava:guava:30.1.1-jre'
+    implementation 'com.jayway.jsonpath:json-path:2.4.0'
+    implementation 'commons-io:commons-io:2.8.0'
+    implementation 'com.google.apis:google-api-services-healthcare:v1-rev20210603-1.31.0'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+shadowJar {
+//    mainClassName = project.findProperty('mainClass') ?: 'pipeline.FhirIOImportTestRunner'
+//    mainClassName = project.findProperty('mainClass') ?: 'pipeline.FhirIOReadWriteTestRunner'
+    mainClassName = project.findProperty('mainClass') ?: 'pipeline.FhirIOWriteTestRunner'
+    zip64 = true
+}
