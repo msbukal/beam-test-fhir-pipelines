@@ -98,16 +98,17 @@ public class FhirIOReadWriteTestRunner {
         + "       \"method\": \"POST\","
         + "       \"url\": \"%s\""
         + "     },"
-        + "     \"resource\": {%s}"
+        + "     \"resource\": %s"
         + "   }"
         + " ]"
         + "}";
 
     @ProcessElement
-    public String process(String input) {
-      JsonObject inJson = JsonParser.parseString(input).getAsJsonObject();
+    public void process(ProcessContext ctx) {
+      String in = ctx.element();
+      JsonObject inJson = JsonParser.parseString(in).getAsJsonObject();
       String resourceType = inJson.getAsJsonPrimitive("resourceType").getAsString();
-      return String.format(TEMPLATE, resourceType, input);
+      ctx.output(String.format(TEMPLATE, resourceType, in));
     }
   }
 }
